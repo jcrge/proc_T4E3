@@ -15,14 +15,17 @@ namespace T4E3
         static void Main(string[] args)
         {
             int n = 0;
-            Thread t1 = new Thread(() => UpdateVar(ref n, m => m + 1));
-            Thread t2 = new Thread(() => UpdateVar(ref n, m => m - 1));
+            Thread t1 = new Thread(() => UpdateVar(ref n, m => m + 1, "Adder"));
+            Thread t2 = new Thread(() => UpdateVar(ref n, m => m - 1, "Subtracter"));
 
             t1.Start();
             t2.Start();
+
+            t1.Join();
+            t2.Join();
         }
 
-        private static void UpdateVar(ref int n, UpdateVarOp op)
+        private static void UpdateVar(ref int n, UpdateVarOp op, String tag)
         {
             Func<int, bool> stopCond = m => Math.Abs(m) == 1000;
 
@@ -33,8 +36,8 @@ namespace T4E3
                     if (!stopCond(n))
                     {
                         n = op(n);
-                        Console.SetCursorPosition(1, 1);
-                        Console.Write("{0,-5}", n);
+                        //Console.SetCursorPosition(1, 1);
+                        Console.WriteLine("{0} => {1}", tag, n);
                     }
                 }
             }
